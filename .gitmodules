@@ -1,6 +1,9 @@
 [submodule "mozilla-ca"]
 	path = mozilla-ca
-	url = git@github.com:Chia-Network/mozilla-ca
+	url = https://github.com/Chia-Network/mozilla-ca.git
 [submodule "bluepoolui"]
 	path = bluepoolui
 	url = git@github.com:chiabluepool/bluepoolui.git
+[submodule "bluepool_ui"]
+	path = bluepool_ui
+	url = https://github.com/chiabluepool/bluepool_ui.git

@@ -7,7 +7,7 @@ if [ -z "$VIRTUAL_ENV" ]; then
 	exit 1
 fi
 
-# Allows overriding the branch or commit to build in bluepoolui
+# Allows overriding the branch or commit to build in bluepool_ui
 SUBMODULE_BRANCH=$1
 
 UBUNTU=false
@@ -67,7 +67,7 @@ if [ ! "$CI" ]; then
 	echo "Running git submodule update."
 	echo ""
 	git submodule update
-	cd bluepoolui
+	cd bluepool_ui
 
 	if [ "$SUBMODULE_BRANCH" ];
 	then
@@ -89,4 +89,4 @@ fi
 echo ""
 echo "Chia blockchain install-gui.sh complete."
 echo ""
-echo "Type 'cd bluepoolui' and then 'npm run electron &' to start the GUI"
+echo "Type 'cd bluepool_ui' and then 'npm run electron &' to start the GUI"

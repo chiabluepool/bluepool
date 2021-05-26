@@ -17,12 +17,16 @@ from chia.plotting.plot_tools import load_plots
 from chia.plotting.plot_tools import remove_plot_directory as remove_plot_directory_pt
 from chia.util.config import load_config, save_config
 from chia.util.keychain import Keychain
+from chia.ssl.create_ssl import get_mozzila_ca_crt
+from chia.server.server import ssl_context_for_root
 
 log = logging.getLogger(__name__)
 
 
 async def post(session: aiohttp.ClientSession, url: str, data: Any):
-    response = await session.post(url, json=data)
+    mozzila_root = get_mozzila_ca_crt()
+    ssl_context = ssl_context_for_root(mozzila_root)
+    response = await session.post(url, json=data, ssl=ssl_context)
     if response.status == 200:
         return await response.json()
 
@@ -113,7 +117,6 @@ class Harvester:
         username = request["username"]
         password = request["password"]
         status = await self.sign_in(username, password)
-
         if status is False:
             return False
         self.username = username
@@ -141,10 +144,13 @@ class Harvester:
 
     async def _start(self):
         self._refresh_lock = asyncio.Lock()
-        if self.username is not None and self.password is not None:
-            status = await self.sign_in(self.username, self.password)
-            if status is True:
-                self.logged_in = True
+        try:
+            if self.username is not None and self.password is not None:
+                status = await self.sign_in(self.username, self.password)
+                if status is True:
+                    self.logged_in = True
+        except Exception as e:
+            self.log.info("Failed to log in")
 
     def _close(self):
         self._is_shutdown = True

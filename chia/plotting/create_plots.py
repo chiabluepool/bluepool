@@ -131,10 +131,12 @@ def create_plots(args, root_path, use_datetime=True, test_private_keys: Optional
         username = u_config["harvester"]["username"]
         password = u_config["harvester"]["password"]
         api_url = u_config["harvester"]["api_url"]
-        if username is not None and password is not None:
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(send_update(api_url, username, password, plot_id, 0))
-
+        try:
+            if username is not None and password is not None:
+                loop = asyncio.get_event_loop()
+                loop.run_until_complete(send_update(api_url, username, password, plot_id, 0))
+        except Exception as e:
+            log.info(f"Error sending update: {e}")
         if args.plotid is not None:
             log.info(f"Debug plot ID: {args.plotid}")
             plot_id = bytes32(bytes.fromhex(args.plotid))
@@ -191,9 +193,12 @@ def create_plots(args, root_path, use_datetime=True, test_private_keys: Optional
             username = u_config["harvester"]["username"]
             password = u_config["harvester"]["password"]
             api_url = u_config["harvester"]["api_url"]
-            if username is not None and password is not None:
-                loop = asyncio.get_event_loop()
-                loop.run_until_complete(send_update(api_url, username, password, plot_id, 1))
+            try:
+                if username is not None and password is not None:
+                    loop = asyncio.get_event_loop()
+                    loop.run_until_complete(send_update(api_url, username, password, plot_id, 1))
+            except Exception as e:
+                log.info(f"Error sending update: {e}")
         else:
             log.info(f"Plot {filename} already exists")
 
