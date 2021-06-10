@@ -1,5 +1,6 @@
 import asyncio
 import socket
+from asyncio import CancelledError
 
 from chia.server.server import ChiaServer
 from chia.types.peer_info import PeerInfo
@@ -22,9 +23,13 @@ def start_reconnect_task(server: ChiaServer, peer_info_arg: PeerInfo, log, auth:
                     log.info(f"Reconnecting to peer {peer_info}")
                     try:
                         await server.start_client(peer_info, server.on_connect, auth=auth)
+                    except CancelledError:
+                        raise
                     except Exception as e:
                         log.info(f"Failed to connect to {peer_info} {e}")
                 await asyncio.sleep(3)
+            except CancelledError:
+                raise
             except Exception as e:
                 log.info(f"Failed to connect to {peer_info} {e}")
 
